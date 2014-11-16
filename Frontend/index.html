@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Minecraft Hacking</title>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<link rel="icon" href="css/favicon.png" />
+		
+		<style type="text/css" media="screen">
+    
+	#editor {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        height: 100%;
+        float: right;
+        width: -moz-calc(100% - 720px);
+		width: -webkit-calc(100% - 720px);
+		width: calc(100% - 720px);
+    }
+	
+	#cheatsheet {
+		height: 100%;
+		/*background: #888;*/
+	}
+
+	.cheatsection {
+		-webkit-border-radius: 8px;
+		-moz-border-radius: 8px;
+		border-radius: 8px;
+		background: #ff8;
+		margin: 20px;
+		padding: 5px;
+	}
+
+	.cheatsection > h3 {
+		margin: 0px;
+		margin-bottom: 4px;
+	}
+
+	.cheatsection > p {
+		margin: 0px;
+	}
+
+	.cheatsection > table {
+		border-collapse: collapse;
+		width: 650px;
+	}
+
+	.cheatsection > table > tbody > tr > td {
+		border: 2px solid #595;
+		font-family: sans-serif;
+	}
+    
+	#iframe {
+        width: 710px;
+        height: 412px;
+
+    }
+    
+	#canvas {
+      float: left;
+    }
+	
+	body {
+		background: #333;
+	}
+
+}
+</style>
+		
+		
+		
+	</head>
+	
+	<body onload="load_code();">
+	
+	  <div id="editor" style="border:3px; float:right;">
+	
+// Min første Minecraft Mod!
+
+function main()
+{
+	echo ("Hej!");
+
+	registerCommand("hej", cmdHej);
+
+	registerEvent("player.PlayerJoinEvent", onPlayerJoin);
+}
+
+function cmdHej(parameters, player)
+{
+	player.sendMessage("Hej med dig!");
+}
+
+
+function onPlayerJoin( event ) {
+    event.player.sendMessage( 'Velkommen til min server, ' + event.player );
+}
+
+
+  </div>
+
+	  <script src="src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+	  <script>
+		function load_code() {
+		  var editor = ace.edit("editor");
+		  editor.setTheme("ace/theme/monokai");
+		  //  editor.renderer.setShowGutter(false);
+
+		  editor.setFontSize(18);
+		  editor.focus();
+		  editor.setShowPrintMargin(false);
+		  editor.getSession().setMode("ace/mode/javascript");
+
+		  lang = ace.require("ace/lib/lang");
+		  
+		  var edit_time = Date.now();
+		  
+		  editor.getSession().on('change', function() {
+			edit_time = Date.now();
+		  });
+		  
+		  old_code = editor.getSession().getValue();
+		  
+		  setInterval(function(e) {
+			 if (editor.getSession().getValue() !== old_code && (Date.now()-edit_time)>1000) {
+			   old_code = editor.getSession().getValue();
+				 $.ajax({
+				   type: "POST",
+				   url: '/mods/mysecretkey',
+				   processData: false,
+				   contentType: "application/json; charset=UTF-8",
+				   data: JSON.stringify({ 'code': old_code}),
+				   error: function (xhr, ajaxOptions, thrownError) {
+						  localStorage.setItem('mod',old_code);
+						  console.log( "Data Saved Local");
+						}
+				 }).done(function( msg ) {
+				   console.log( "Data Saved: " + msg );
+				 });
+
+			   editor.focus();
+			 }
+		  }, 1000);
+
+			$.getJSON('/mods/mysecretkey', {}, function(data, status) {
+				  if (data.code !== undefined) {
+					code = data.code
+				  }
+				  console.log("loading code")
+				  editor.getSession().setValue(code);
+			}).error(function() {
+			  var val = localStorage.getItem('mod');
+			  if (val !== undefined) {
+					  code = val;
+			  }
+			  console.log("loading local code");
+			  editor.getSession().setValue(code);
+			});
+			
+		}
+	  </script>
+
+	  
+	
+	  <div style="float: left;">
+		<iframe id="iframe" sandbox='allow-same-origin allow-scripts' id='iframe' src='console.html' scrolling="yes"   marginwidth="0"    marginheight= "0"      frameBorder="0">
+		</iframe>
+
+	  </div>
+	  
+		
+		
+	</body>
+</body>

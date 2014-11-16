@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Kvad Snyd</title>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/styles/github.min.css">
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/highlight.min.js"></script>
+
+		<style type="text/css" media="screen">
+    
+	.cheatsheet {
+		width: 720px;
+	}
+
+	.cheatsection {
+		-webkit-border-radius: 8px;
+		-moz-border-radius: 8px;
+		border-radius: 8px;
+		background: #aaafaa;
+		margin: 20px;
+		padding: 10px;
+	}
+
+	.cheatsection > h3 {
+		margin: 0px;
+		margin-bottom: 4px;
+		font-family: sans-serif;
+	}
+
+	.cheatsection > p {
+		margin: 0px;
+	}
+
+	.cheatsection > table {
+		border-collapse: collapse;
+		width: 650px;
+	}
+
+	.cheatsection > table > tbody > tr > td {
+		border: 2px solid #555;
+		font-family: sans-serif;
+		padding-left: 5px;
+		padding-right: 5px;
+	}
+
+	i, b {
+		background-color: white;
+		font-style: normal;
+		font-family: monospace;
+		padding: 1px;
+	}
+    
+	body {
+		background: #333;
+	}
+
+}
+</style>
+		
+		<script>
+
+var apidoc = [
+	{
+		title: "Grafik",
+		entries: [
+			{
+				code: 'pixel(x, y)<br/>pixel(x, y, color)',
+				description: "Sæt en pixel på plads <i>(x, y)</i>. Hvis <i>color</i> er angivet, bruges den som farve."
+			},
+			{
+				code: "background(color)",
+				description: "Vælg baggrundsfarve."
+			},
+			{
+				code: "color(color)",
+				description: "Vælg forgrundsfarve. Bruges f.eks. af efterfølgende <b>pixel()</b>."
+			},
+			{
+				code: "rgb(red, green, blue)",
+				description: "Laver en farve ud fra grundfarverne. Hver farve skal være mellem 0 og 255."
+			},
+			{
+				code: "peek(x, y)",
+				description: "Læser og returnerer farven på plads <i>(x,y)</i>."
+			},
+			{
+				code: "scrolldown()<br/>scrollleft()<br/>scrollright()<br/>scrollup()",
+				description: "Rykker hele billedet ned, venstre, højre eller op."
+			},
+			{
+				code: "scrolldown(x, y, endx, endy)<br/>scrollleft(x, y, endx, endy)<br/>scrollright(x, y, endx, endy)<br/>scrollup(x, y, endx, endy)",
+				description: "Rykker området (rektanglen) mellem <i>(x, y)</i> og <i>(endx, endy)</i> enten ned, venstre, højre eller op."
+			},
+			{
+				code: "scroll(dx, dy, x, y, endx, endy)",
+				description: "Rykker området (rektanglen) mellem <i>(x, y)</i> og <i>(endx, endy)</i>. Hvor meget og i hvilken retning bestemmes af <i>dx</i> og <i>dy</i>."
+			},
+			{
+				code: "write(text, x, y, wrap)<br/>write(text)",
+				description: "Skriver <i>text</i> på skærmen på position <i>(x,y)</i>. Hvis der ikke gives en position skrives der på stedet hvor sidste <b>write()</b> sluttede. Med <i>wrap</i> sat til enten <i>true</i> eller <i>false</i> kan man bestemme om teksten skal brydes ved kanten."
+			},
+			{
+				code: "writeln(text, x, y, wrap)<br/>writeln(text)",
+				description: "Virker som <b>write()</b> men sætter næste position til næste linie."
+			},
+
+		]
+	},
+	{
+		title: "Værktøjer",
+		entries: [
+			{
+				code: 'out(x, y)',
+				description: "Checker om <i>(x, y)</i> er uden for området (dvs <i>x</i> eller <i>y</i> er mindre end 0 eller større end 15)."
+			},
+			{
+				code: 'random(max)',
+				description: "Giver et tilfældigt tal mellem <i>0</i> og <i>max - 1</i>."
+			},
+			{
+				code: 'random(min, max)',
+				description: "Giver et tilfældigt tal mellem <i>min</i> og <i>max</i>."
+			},
+		]
+	},
+	{
+		title: "Variable",
+		entries: [
+			{
+				code: 'mouse_x',
+				description: "(læs). Musens x position."
+			},
+			{
+				code: 'mouse_y',
+				description: "(læs). Musens y position."
+			},
+			{
+				code: 'mouse_pressed',
+				description: "(læs). Indeholder <i>true</i> hvis musens knap er trykket ned, ellers <i>false</i>."
+			},
+			{
+				code: 'key_pressed',
+				description: "(læs). Indeholder <i>true</i> hvis en tast er trykket ned, ellers <i>false/i>."
+			},
+			{
+				code: 'key_char',
+				description: "(læs). Det bogstav eller tegn der blev tastet."
+			},
+			{
+				code: 'loop_time',
+				description: "(læs/skriv). Tiden i millisekunder (1/1000 sekunder) mellem hver gang <b>loop()</b> kører. Er sat til 100 fra start."
+			},
+			{
+				code: 'fps',
+				description: "(læs). Antallet af billeder der vises pr sekund."
+			},
+			{
+				code: 'size',
+				description: "(læs). Størrelsen på området. Er altid (?!) 16..."
+			},
+			{
+				code: 'bitmap',
+				description: "(Array, læs/skriv). Indeholder hele skærm området efter hver <b>loop()</b>."
+			},
+			{
+				code: 'background_color',
+				description: "(læs). Indeholder den aktuelle baggrundsfarve.</b>."
+			}
+		]
+	}
+
+
+];
+
+
+function build_cheats()
+{
+	for (var i = 0; i < apidoc.length; i++)
+	{
+		var sect = apidoc[i];
+		var d = $('<div class="cheatsection"></div>');
+		d.append('<h3>'+sect.title+'</h3>');
+		var t = $('<table></table>');
+		for (var ei = 0; ei < sect.entries.length; ei++)
+		{
+			var e = sect.entries[ei];
+			t.append('<tr><td><pre><code class="javascript">'+e.code+'</code></pre></td><td>'+e.description+'</td></tr>');
+		}
+		d.append(t);
+		$('#autogen_cheat').append(d);
+	}
+	$('.cheatsection table tbody tr td pre code').each(function(i, block) {
+    	hljs.highlightBlock(block);
+  	});
+
+}
+
+		</script>
+
+	</head>
+	
+	<body onload="build_cheats();">
+
+		<pre><code class="javascript">function test(x,y);</code></pre>
+
+	    <div class="cheatsheet" id="autogen_cheat">
+	    </div>
+
+
+
+		
+	</body>

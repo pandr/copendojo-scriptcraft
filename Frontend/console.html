@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Minecraft Server - Console</title>
+		<script src="https://cdn.socket.io/socket.io-1.0.4.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<link rel="icon" href="css/favicon.png" />
+		<link rel="stylesheet" href="css/index.css" type="text/css">
+	</head>
+	
+	<body>
+		<div class="overlay"><div class="authquestion"><h1>Authentication Required</h1><text id="overlay-message">&nbsp;</text><br><text>Password</text><br><input id="password" type="password"/></div></div>
+		<div class="panel">
+			<span id="start" class="button">Start</span><!--<span id="regOptions" class="button">Start Options</span>-->
+			<div class="msg" id="msg"></div>
+			<input id="command" placeholder="Type command here"/>
+			<script>
+				var socket = io('http://localhost:2020');
+				var running = false;
+				var authkey = null;
+				var lastCommand = "";
+				function pageScroll() {
+					$('#msg').get(0).scrollTop = $('#msg').get(0).scrollHeight
+				}
+				socket.on('connected', function (data) {
+					$("#password").keyup(function (e) {
+						if (e.keyCode == 13) {
+							socket.emit('authenticate', $('#password').val());
+						}
+					});
+				});
+				socket.on('permitted', function() {
+					$('.overlay').fadeOut('fast', function() {
+						$('.authquestion').remove();
+					});
+				});
+				socket.on('denied', function() {
+					if($('.overlay')){
+						$('#overlay-message').text("Invalid Password.");
+					}
+				});
+				socket.on('console', function (data) {
+					$('.msg').append("<span>"+data+"</span><br>");
+					pageScroll();
+				});
+				socket.on('status', function (data) {
+					if(data){
+						$('.msg').append("<span>Server "+data+"</span><br>");
+						$('#start').text("Stop ("+data+")");
+						running = true;
+					} else {
+						$('.msg').append("<span>Server offline</span><br>");
+						$('#start').text("Start");
+						running = false;
+					}
+					pageScroll();
+				});
+				$("#command").keyup(function (e) {
+					if (e.keyCode == 13) {
+						socket.emit('command', $('#command').val());
+						lastCommand = $('#command').val();
+						$('#command').val("");
+					}
+					if (e.keyCode == 38) {
+						$('#command').val(lastCommand);
+					}
+					if (e.keyCode == 40) {
+						$('#command').val("");
+					}
+				});
+				$('#start').on('click', function() {
+					if(running){
+						socket.emit('command', "stop");
+					} else {
+						socket.emit('start', true);
+					}
+				});
+			</script>
+		</div>
+	</body>
+</body>

@@ -1,0 +1,28 @@
+{
+  "name": "copendojo-scriptcraft",
+  "version": "1.0.0",
+  "description": "A web based, IDE-like way of hacking minecraft with ScriptCraft",
+  "main": "MinecraftServerConsole.js",
+  "dependencies": {
+    "express": "^4.9.0",
+    "body-parser": "^1.8.1",
+    "connect": "^3.2.0",
+    "ip": "^0.3.1",
+    "socket.io": "^1.1.0",
+    "serve-static": "^1.6.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pandr/copendojo-scriptcraft.git"
+  },
+  "author": "Peter Andreasen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pandr/copendojo-scriptcraft/issues"
+  },
+  "homepage": "https://github.com/pandr/copendojo-scriptcraft"
+}

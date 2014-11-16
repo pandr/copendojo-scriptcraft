@@ -1,0 +1,69 @@
+@font-face{
+	font-family: minecraftia;
+	src: url(Minecraftia.ttf);
+}
+body{
+	margin: 0;
+	font-family: minecraftia,Helvetica,Tahoma,Arial,sans-serif;
+	background: url(http://fc09.deviantart.net/fs71/i/2013/255/a/b/minecraft_wallpaper_by_datfireflow-d6m2e0h.png);
+	background: url(mcwall.jpg);
+	background-repeat: no-repeat;
+	background-size: 100%;
+	color: white;
+	text-shadow: 2px 2px black;
+	font-size: 12px;
+}
+.button{
+	cursor: pointer;
+	background-image: url(widgets.png);
+	width: 220px;
+	display: inline-block;
+	text-align: center;
+	background-position: 0px -20px;
+	background-size: 220px;
+}
+.button:hover{
+	background-position: 0px -42px;
+}
+#msg{
+	overflow: auto;
+	width: 100%;
+	position: absolute;
+	bottom: 25px;
+	top: 25px;
+}
+input{
+	border: 2px solid rgb(170, 170, 170);
+	background-color: black;
+	color: white;
+	font-family: minecraftia;
+}
+#command{
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	left: 0;
+	display: block;
+}
+.panel{
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	position: absolute;
+}
+.overlay{
+	height: 100%;
+	width: 100%;
+	display: block;
+	position: fixed;
+	z-index: 5;
+	background-color: rgba(0, 0, 0, 0.61);
+}
+.authquestion{
+	display: block;
+	width: 600px;
+	text-align: center;
+	margin: 0 auto;
+	position: relative;
+	height: 400px;
+}
