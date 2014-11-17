@@ -67,3 +67,6 @@ input{
 	position: relative;
 	height: 400px;
 }
+.msg span {
+	white-space: pre-wrap;
+}

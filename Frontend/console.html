@@ -41,7 +41,8 @@
 					}
 				});
 				socket.on('console', function (data) {
-					$('.msg').append("<span>"+data+"</span><br>");
+					console.log(data);
+					$('.msg').append("<span>"+data+"</span>");
 					pageScroll();
 				});
 				socket.on('status', function (data) {

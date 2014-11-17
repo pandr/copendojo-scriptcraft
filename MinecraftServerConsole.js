@@ -13,7 +13,7 @@ var exec = require('child_process'),
     port = 2020, // Website port
 	dir = __dirname+"/Frontend", // Website directory
 	serverdir = __dirname+"/Server", // Minecraft server directory
-	scriptpluginsdir = serverdir + "/plugins/scriptcraft/plugins/",
+	scriptpluginsdir = serverdir + "/scriptcraft/plugins/",
 	express = require('express'),
 	fs = require('fs'),
 	server = null, // Not null if the server is running
@@ -108,7 +108,7 @@ io.on('connection', function (socket) {
 	socket.on('command', function(cmd) {
 		if(thisClientCanDoThings){
 			if(server_process){
-				socket.emit('console', ""+cmd);
+				socket.emit('console', ""+cmd+"\n");
 				server_process.stdin.write(cmd+'\r');
 			} else {
 				socket.emit('console', "Please start the server before entering any commands.");
