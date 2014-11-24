@@ -9,19 +9,19 @@ function main()
 {
 	echo ("Hej!");
 
-	//registerCommand("hej", cmdHej);
+	registerCommand("hej", cmdHej);
 
-//	registerEvent("player.PlayerJoinEvent", onPlayerJoin);
 	registerEvent(Packages.net.canarymod.hook.player.ConnectionHook, onPlayerJoin);
 }
 
 function cmdHej(parameters, player)
 {
-	player.sendMessage("Hej med dig!");
+	echo(player, "Hej med dig!");
 }
 
 
-function onPlayerJoin( event ) {
+function onPlayerJoin( event )
+{
     echo(event.player, 'Velkommen til min server, ' + event.player.name );
 }
 
