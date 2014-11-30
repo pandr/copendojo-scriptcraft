@@ -1,6 +1,6 @@
 
 //
-// Min første Minecraft Mod!
+// Min anden Minecraft Mod!
 //
 
 registerEvent = events.on;

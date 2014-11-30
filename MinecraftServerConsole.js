@@ -13,7 +13,7 @@ var exec = require('child_process'),
     port = 2020, // Website port
 	dir = __dirname+"/Frontend", // Website directory
 	serverdir = __dirname+"/Server", // Minecraft server directory
-	scriptpluginsdir = serverdir + "/scriptcraft/plugins/",
+	scriptpluginsdir = serverdir + "/scriptcraft/mods/",
 	express = require('express'),
 	fs = require('fs'),
 	server = null, // Not null if the server is running
@@ -31,23 +31,39 @@ var app = express();
 app.use(bodyParser.json());
 app.use(express.static(dir));
 
-app.post("/mods/:key", function (req, res) {
-	var filename = scriptpluginsdir+"/testmod.js";
-	fs.writeFile(filename, req.body.code, function(err) {
-		if(err) {
-			console.log(err);
-		}
-		else {
-			console.log("Saved data to " + filename);
-		}
-	});
+app.post("/mods/:key/:filename", function (req, res) {
+	//var filename = scriptpluginsdir+"/testmod.js";
+	var filename = scriptpluginsdir+"/"+req.params.filename;
+	if(fs.existsSync(filename))
+	{
+		fs.writeFile(filename, req.body.code, function(err) {
+			if(err) {
+				console.log(err);
+			}
+			else {
+				console.log("Saved data to " + filename);
+			}
+		});
+	}
+	else
+	{
+		console.log("Recieved data for unknown file: "+filename);
+	}
 	res.send({});
 }); 
 
+// For now we ignore 'key'
 app.get("/mods/:key", function (req, res) {
-	var filename = scriptpluginsdir+"/testmod.js";
-	var data = fs.readFileSync(filename, 'utf8');
-	res.send({code:data});
+	var files = fs.readdirSync(scriptpluginsdir);
+	//var filename = scriptpluginsdir+"/testmod.js";
+	var response = {};
+	for(var i=0; i < files.length; i++)
+	{
+		var filename = files[i];
+		var data = fs.readFileSync(scriptpluginsdir+'/'+filename, 'utf8');
+		response[filename] = data;
+	}
+	res.send(response);
 });
 
 var io = require('socket.io')(app.listen(port)); // Socket IO

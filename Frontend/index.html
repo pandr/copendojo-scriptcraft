@@ -8,16 +8,32 @@
 		
 		<style type="text/css" media="screen">
     
-	#editor {
+	#editors > div {
         position: absolute;
-        top: 0;
+        top: 40px;
         right: 0;
         bottom: 0;
-        height: 100%;
         float: right;
+        width: -moz-calc(100% - 725px);
+		width: -webkit-calc(100% - 725px);
+		width: calc(100% - 725px);
+        height: -moz-calc(100% - 40px);
+        height: -webkit-calc(100% - 40px);
+        height: calc(100% - 40px);
+        padding: 0px;
+    }
+
+    #editor-head {
+    	position: absolute;
+    	top: 5px;
+    	right: 0;
+    	float: right;
+    	height: 35px;
         width: -moz-calc(100% - 720px);
 		width: -webkit-calc(100% - 720px);
 		width: calc(100% - 720px);
+		padding: 0px;
+		padding-top: 4px;
     }
 	
 	#cheatsheet {
@@ -64,8 +80,48 @@
     }
 	
 	body {
-		background: #333;
+		background: #555;
 	}
+
+		ul.tabs{
+			margin: 0px;
+			padding: 0px;
+			padding-left: 15px;
+			list-style: none;
+			font-family: sans-serif;
+		}
+		ul.tabs li{
+			background: #666;
+			color: #aaa;
+			display: inline-block;
+			padding: 5px 10px;
+			cursor: pointer;
+			border-radius: 5px 5px 0px 0px;
+		}
+
+		ul.tabs li.current{
+			background: #222;
+			color: #eee;
+			font-weight: bold;
+			border-bottom: none;
+			height: 30px;
+		}
+
+		ul.tabs li span.change_indicator {
+			display: none;
+		}
+
+		ul.tabs li span.change_indicator.changed {
+			display: inherit;
+		}
+
+		.tab-content{
+			display: none;
+		}
+
+		.tab-content.current{
+			display: inherit;
+		}
 
 }
 </style>
@@ -75,37 +131,32 @@
 	</head>
 	
 	<body onload="load_code();">
-	
-	  <div id="editor" style="border:3px; float:right;">
-	
-// Min første Minecraft Mod!
 
-function main()
-{
-	echo ("Hej!");
+	  <div id="editor-head">
 
-	registerCommand("hej", cmdHej);
+	  <ul class="tabs">
+	  </ul>
 
-	registerEvent("player.PlayerJoinEvent", onPlayerJoin);
-}
-
-function cmdHej(parameters, player)
-{
-	player.sendMessage("Hej med dig!");
-}
-
-
-function onPlayerJoin( event ) {
-    event.player.sendMessage( 'Velkommen til min server, ' + event.player );
-}
-
-
-  </div>
+	  </div>
+	  
+	  <div id="editors">
+	  </div>
 
 	  <script src="src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 	  <script>
-		function load_code() {
-		  var editor = ace.edit("editor");
+
+	  	var code_buffers = {};
+
+	  	function add_tab(name, code)
+	  	{
+
+			var editor_name = "editor-"+name.replace(/[^a-z0-9_-]/g, '_');
+	  		$('<li class="tab-link" data-tab="'+name+'">'+name+' <span class="change_indicator" id="changed-'+editor_name+'">*</span></li>').appendTo('ul.tabs').click(function(){
+	  			select_tab(name);
+			});
+			$('#editors').append('<div class="tab-content" id="'+editor_name+'">'+code+'</div>');
+
+		  editor = ace.edit(editor_name);
 		  editor.setTheme("ace/theme/monokai");
 		  //  editor.renderer.setShowGutter(false);
 
@@ -116,50 +167,93 @@ function onPlayerJoin( event ) {
 
 		  lang = ace.require("ace/lib/lang");
 		  
-		  var edit_time = Date.now();
+		  editor.__edit_time = Date.now();
+		  editor.__editor_name = editor_name;
+
+		  // Crazy pattern to freeze editor inside a new closure letting the change handler know which editor was changed
+		  editor.getSession().on('change', function(ed) {
+		  		var editor = ed;
+		  		return function() {
+					editor.__edit_time = Date.now();
+					$('#changed-'+editor.__editor_name).addClass("changed");
+				};
+			}(editor)
+		  );
 		  
-		  editor.getSession().on('change', function() {
-			edit_time = Date.now();
-		  });
-		  
-		  old_code = editor.getSession().getValue();
+		  editor.old_code = editor.getSession().getValue();
+
+	  	  code_buffers[name] = editor;
 		  
 		  setInterval(function(e) {
-			 if (editor.getSession().getValue() !== old_code && (Date.now()-edit_time)>1000) {
-			   old_code = editor.getSession().getValue();
-				 $.ajax({
-				   type: "POST",
-				   url: '/mods/mysecretkey',
-				   processData: false,
-				   contentType: "application/json; charset=UTF-8",
-				   data: JSON.stringify({ 'code': old_code}),
-				   error: function (xhr, ajaxOptions, thrownError) {
-						  localStorage.setItem('mod',old_code);
-						  console.log( "Data Saved Local");
-						}
-				 }).done(function( msg ) {
-				   console.log( "Data Saved: " + msg );
-				 });
+		  	for(var name in code_buffers)
+		  	{
+		  		var editor = code_buffers[name];
+				if (editor.getSession().getValue() !== editor.old_code && (Date.now()-editor.__edit_time)>1000) {
+				   editor.old_code = editor.getSession().getValue();
 
-			   editor.focus();
+					 $.ajax({
+					   type: "POST",
+					   url: '/mods/mysecretkey/'+name,
+					   processData: false,
+					   contentType: "application/json; charset=UTF-8",
+					   data: JSON.stringify({ 'code': editor.old_code}),
+					   error: function (xhr, ajaxOptions, thrownError) {
+							  localStorage.setItem('mod',old_code);
+							  console.log( "Data Saved Local");
+							}
+					 }).done(function( msg ) {
+					   console.log( "Data Saved: " + msg );
+					 });
+
+					$('#changed-'+editor.__editor_name).removeClass("changed");
+
+				   editor.focus();
+			  	}
 			 }
 		  }, 1000);
+	  	}
+
+	  	function select_tab(name)
+	  	{
+	  		var elt = $("ul.tabs li[data-tab='"+name+"']");
+	  		if(elt.length == 0)
+	  			return;
+		  	$('ul.tabs li').removeClass('current');
+		  	elt.addClass('current');
+		  	$('.tab-content').removeClass('current');
+		  	$(code_buffers[name].container).addClass('current');
+		  	code_buffers[name].resize();
+	  	}
+
+	  	function clear_tabs()
+	  	{
+	  		code_buffers = {};
+	  		$('ul.tabs li').remove();
+	  		$('.tab-content').remove();
+	  	}
+
+		function load_code() {
 
 			$.getJSON('/mods/mysecretkey', {}, function(data, status) {
-				  if (data.code !== undefined) {
-					code = data.code
+				  clear_tabs();
+				  var filecount = 0;
+				  for(var file in data)
+				  {
+				  	console.log("Loading code for: "+file);
+				  	add_tab(file, data[file]);
+				  	if(filecount == 0)
+				  		select_tab(file);
+				  	filecount += 1;
 				  }
-				  console.log("loading code")
-				  editor.getSession().setValue(code);
+				  //editor.getSession().setValue(code);
 			}).error(function() {
-			  var val = localStorage.getItem('mod');
+			  /*var val = localStorage.getItem('mod');
 			  if (val !== undefined) {
 					  code = val;
-			  }
-			  console.log("loading local code");
-			  editor.getSession().setValue(code);
+			  }*/
+			  console.log("No mods?");
+			  //editor.getSession().setValue(code);
 			});
-			
 		}
 	  </script>
 

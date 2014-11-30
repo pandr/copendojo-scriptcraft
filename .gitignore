@@ -34,6 +34,4 @@ Server/lang
 Server/usercache.json
 Server/worlds
 Server/scriptcraft/*
-!Server/scriptcraft/plugins
-Server/scriptcraft/plugins/*
-!Server/scriptcraft/plugins/testmod.js
+!Server/scriptcraft/mods
