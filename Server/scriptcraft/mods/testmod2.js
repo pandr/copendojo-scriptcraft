@@ -7,9 +7,9 @@ registerEvent = events.on;
 
 function main()
 {
-	echo ("Hej!");
+	echo ("Hej2!");
 
-	registerCommand("hej", cmdHej);
+	registerCommand("hej2", cmdHej);
 
 	registerEvent(Packages.net.canarymod.hook.player.ConnectionHook, onPlayerJoin);
 }

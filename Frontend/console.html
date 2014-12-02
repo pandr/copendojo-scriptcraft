@@ -24,11 +24,15 @@
 					$('#msg').get(0).scrollTop = $('#msg').get(0).scrollHeight
 				}
 				socket.on('connected', function (data) {
+					/*
 					$("#password").keyup(function (e) {
 						if (e.keyCode == 13) {
 							socket.emit('authenticate', $('#password').val());
 						}
 					});
+*/
+					$('.overlay').remove();
+					$('.authquestion').remove();
 				});
 				socket.on('permitted', function() {
 					$('.overlay').fadeOut('fast', function() {

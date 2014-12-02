@@ -73,7 +73,7 @@ io.on('connection', function (socket) {
 	socket.emit('connected', true);
 	socket.emit('status', server);
 	console.log("Client connected from "+adress);
-	var thisClientCanDoThings = false
+	var thisClientCanDoThings = true;
 	socket.on('start', function(cmd) {
 		if(thisClientCanDoThings){
 			if(!server){
